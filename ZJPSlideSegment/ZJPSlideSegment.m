@@ -30,35 +30,35 @@
 
 @implementation ZJPSlideSegment
 
-- (UIColor *)zjp_SelectedItemColor {
-    if (!_zjp_SelectedItemColor) {
-        _zjp_SelectedItemColor = [UIColor redColor];
+- (UIColor *)selectedItemColor {
+    if (!_selectedItemColor) {
+        _selectedItemColor = [UIColor redColor];
     }
-    return _zjp_SelectedItemColor;
+    return _selectedItemColor;
 }
 
-- (CGFloat)zjp_ItemesOfMargin {
-    if (!_zjp_ItemesOfMargin) {
-        _zjp_ItemesOfMargin = 8;
+- (CGFloat)itemesOfMargin {
+    if (!_itemesOfMargin) {
+        _itemesOfMargin = 8;
     }
-    return _zjp_ItemesOfMargin;
+    return _itemesOfMargin;
 }
 
-- (CGFloat)zjp_ItemsFontSize {
-    if (!_zjp_ItemsFontSize) {
-        _zjp_ItemsFontSize = 14;
+- (CGFloat)itemsFontSize {
+    if (!_itemsFontSize) {
+        _itemsFontSize = 14;
     }
-    return _zjp_ItemsFontSize;
+    return _itemsFontSize;
 }
 
-- (UIColor *)zjp_ItemsDefualtColor {
-    if (!_zjp_ItemsDefualtColor) {
-        _zjp_ItemsDefualtColor = [UIColor blackColor];
+- (UIColor *)itemsDefualtColor {
+    if (!_itemsDefualtColor) {
+        _itemsDefualtColor = [UIColor blackColor];
     }
-    return _zjp_ItemsDefualtColor;
+    return _itemsDefualtColor;
 }
 
-+ (ZJPSlideSegment *)zjp_SlideSegmentWithFrame:(CGRect)frame Style:(ZJPSegmentStyle)style {
++ (ZJPSlideSegment *)slideSegmentWithFrame:(CGRect)frame Style:(ZJPSegmentStyle)style {
     return [[ZJPSlideSegment alloc]initWithFrame:frame Style:style];
 }
 
@@ -76,19 +76,19 @@
     return self;
 }
 
-- (void)zjp_SetItems:(NSArray *)items {
+- (void)setItems:(NSArray *)items {
     if (!items || items.count == 0) {
         return;
     }
     self.allItems = [items copy];
-    self.itemMaxY = self.zjp_ItemesOfMargin;
+    self.itemMaxY = self.itemesOfMargin;
     for (int i = 0; i < items.count; i++) {
         [self creatItem:items[i]];
     }
     [self resizeButtonWidth];
 }
 
-- (void)zjp_AddItems:(NSArray *)items {
+- (void)addItems:(NSArray *)items {
     if (!items || items.count == 0) {
         return;
     }
@@ -102,7 +102,7 @@
     [self resizeButtonWidth];
 }
 
-- (void)zjp_RemoveItems:(NSArray *)items {
+- (void)removeItems:(NSArray *)items {
     if ((!items || items.count == 0) && _allItems.count == 0) {
         return;
     }
@@ -121,51 +121,51 @@
 }
 
 - (void)creatItem:(NSString *)item {
-    CGFloat itemWidth = [self getItemTextFontSize:self.zjp_ItemsFontSize withItem:item];
+    CGFloat itemWidth = [self getItemTextFontSize:self.itemsFontSize withItem:item];
     UIButton *itemButton = [[UIButton alloc]initWithFrame:CGRectMake(_itemMaxY, 0, itemWidth, CGRectGetHeight(self.bounds))];
-    itemButton.titleLabel.font = [UIFont systemFontOfSize:self.zjp_ItemsFontSize];
+    itemButton.titleLabel.font = [UIFont systemFontOfSize:self.itemsFontSize];
     [itemButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [itemButton setTitle:item forState:UIControlStateNormal];
-    [itemButton setTitleColor:self.zjp_ItemsDefualtColor forState:UIControlStateNormal];
+    [itemButton setTitleColor:self.itemsDefualtColor forState:UIControlStateNormal];
     [itemButton addTarget:self action:@selector(itemButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [_buttonList addObject:itemButton];
     [self addSubview:itemButton];
-    _itemMaxY += _zjp_ItemesOfMargin + itemWidth;
+    _itemMaxY += _itemesOfMargin + itemWidth;
     self.contentSize = CGSizeMake(_itemMaxY, CGRectGetHeight(self.bounds));
 }
 
 - (void)resizeButtonWidth {
-    _itemMaxY = _zjp_ItemesOfMargin;
+    _itemMaxY = _itemesOfMargin;
     for (int i = 0; i < _buttonList.count; i++) {
-        CGFloat buttonWidth = (SELF_WIDTH - _zjp_ItemesOfMargin * (_buttonList.count + 1)) / _buttonList.count;
+        CGFloat buttonWidth = (SELF_WIDTH - _itemesOfMargin * (_buttonList.count + 1)) / _buttonList.count;
         UIButton *itemButton = _buttonList[i];
         if ( buttonWidth != CGRectGetWidth(itemButton.bounds)) {
             CGRect itemButtonFrame = itemButton.frame;
             CGFloat newButtonWidth;
-            if (buttonWidth > [self getItemTextFontSize:self.zjp_ItemsFontSize withItem:itemButton.titleLabel.text]) {
+            if (buttonWidth > [self getItemTextFontSize:self.itemsFontSize withItem:itemButton.titleLabel.text]) {
                 newButtonWidth = buttonWidth;
-            } else if (buttonWidth < [self getItemTextFontSize:self.zjp_ItemsFontSize withItem:itemButton.titleLabel.text]) {
-                newButtonWidth = [self getItemTextFontSize:self.zjp_ItemsFontSize withItem:itemButton.titleLabel.text];
+            } else if (buttonWidth < [self getItemTextFontSize:self.itemsFontSize withItem:itemButton.titleLabel.text]) {
+                newButtonWidth = [self getItemTextFontSize:self.itemsFontSize withItem:itemButton.titleLabel.text];
             }
             itemButtonFrame.size.width = newButtonWidth;
             itemButtonFrame.origin.x = _itemMaxY;
             itemButton.frame = itemButtonFrame;
-            _itemMaxY += _zjp_ItemesOfMargin + newButtonWidth;
+            _itemMaxY += _itemesOfMargin + newButtonWidth;
         } else {
-            _itemMaxY += itemButton.bounds.size.width + _zjp_ItemesOfMargin;
+            _itemMaxY += itemButton.bounds.size.width + _itemesOfMargin;
         }
     }
-    _indicator.backgroundColor = self.zjp_SelectedItemColor;
+    _indicator.backgroundColor = self.selectedItemColor;
     self.contentSize = CGSizeMake(_itemMaxY, CGRectGetHeight(self.bounds));
     
-    UIButton *button = _buttonList[_zjp_DefualtSelectedIndexOfItem >= _buttonList.count ? 0 : _zjp_DefualtSelectedIndexOfItem ];
-    [self.selectedItemButton setTitleColor:_zjp_ItemsDefualtColor forState:UIControlStateNormal];
+    UIButton *button = _buttonList[_defualtSelectedIndexOfItem >= _buttonList.count ? 0 : _defualtSelectedIndexOfItem ];
+    [self.selectedItemButton setTitleColor:_itemsDefualtColor forState:UIControlStateNormal];
     self.selectedItemButton = button;
     switch (self.style) {
         case 0:
             _indicator.frame = CGRectMake(CGRectGetMinX(button.frame), self.bounds.size.height -2, button.bounds.size.width, self.bounds.size.height);
             _indicator.hidden = NO;
-            [button setTitleColor:_zjp_SelectedItemColor forState:UIControlStateNormal];
+            [button setTitleColor:_selectedItemColor forState:UIControlStateNormal];
             break;
         case 1:
             _indicator.frame = CGRectMake(CGRectGetMinX(button.frame), self.bounds.origin.y + INDICATOR_MARGIN, button.bounds.size.width, self.bounds.size.height - INDICATOR_MARGIN * 2);
@@ -175,7 +175,7 @@
             _indicator.hidden = NO;
             break;
         case 2:
-            [button setTitleColor:_zjp_SelectedItemColor forState:UIControlStateNormal];
+            [button setTitleColor:_selectedItemColor forState:UIControlStateNormal];
             _indicator.hidden = YES;
         default:
             break;
@@ -183,7 +183,7 @@
 
 }
 
-- (void)zjp_ItemClicked:(itemClicked)block {
+- (void)itemClicked:(itemClicked)block {
     self.itemClicked = block;
 }
 
@@ -195,8 +195,8 @@
     CGFloat bottomLineWidth = CGRectGetWidth(button.bounds);
     
     [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        [_selectedItemButton setTitleColor:self.zjp_ItemsDefualtColor forState:UIControlStateNormal];
-        [button setTitleColor:self.zjp_SelectedItemColor forState:UIControlStateNormal];
+        [_selectedItemButton setTitleColor:self.itemsDefualtColor forState:UIControlStateNormal];
+        [button setTitleColor:self.selectedItemColor forState:UIControlStateNormal];
         CGRect frame = _indicator.frame;
         frame.size.width = bottomLineWidth;
         frame.origin.x = button.frame.origin.x;
@@ -219,7 +219,7 @@
             } else if (buttonX < SELF_WIDTH / 2.0f - buttonWidth / 2.0f) { // 移动到开始
                 self.contentOffset = CGPointMake(0, 0);
             } else if (scrollerWidth - buttonX < SELF_WIDTH / 2.0f + buttonWidth / 2.0f || // Scroller的宽度减去按钮的坐标小于屏幕的一半，移动到最后
-                       buttonX + buttonWidth + self.zjp_ItemesOfMargin == scrollerWidth) {
+                       buttonX + buttonWidth + self.itemesOfMargin == scrollerWidth) {
                 if (scrollerWidth > SELF_WIDTH) {
                     self.contentOffset = CGPointMake(scrollerWidth - SELF_WIDTH, 0); // 移动到末尾
                 }
@@ -228,7 +228,7 @@
     }];
     NSInteger selectedIndex = [self indexOfitemsSelected:sender];
     self.selectedItemButton = sender;
-    self.zjp_DefualtSelectedIndexOfItem = selectedIndex;
+    self.defualtSelectedIndexOfItem = selectedIndex;
     if (self.itemClicked != nil) {
         self.itemClicked (button.titleLabel.text,selectedIndex);
     }
