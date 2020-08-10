@@ -2,7 +2,7 @@
 
 ZJPSlideSegment 是一款可以根据大部分需求自定义的分段选择器空间，现支持的样式如下：
 
- ![ZJPSlideSegment1](ZJPSlideSegment1.png)
+ ![ZJPSlideSegment1](http://blog.images.aaronzjp.cn/ZJPSlideSegment1.png)
 
 ### 安装
 
